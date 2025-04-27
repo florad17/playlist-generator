@@ -24,7 +24,8 @@ const spotifyApi = new SpotifyWebApi({
 
 
 app.get('/auth/spotify', (req, res) => {
-    const authorizeURL = spotifyApi.createAuthorizeURL(['user-library-read', 'playlist-modify-public'], 'state');
+    const scopes = ['user-library-read', 'playlist-modify-public'];
+    const authorizeURL = spotifyApi.createAuthorizeURL(scopes, 'state');
     res.redirect(authorizeURL)
 })
 
@@ -45,7 +46,7 @@ app.get('/callback', async (req, res) => {
 
         res.redirect(`http://localhost:3000?access_token=${accessToken}`)
     } catch (err) {
-        console.error('Error dring callback', err);
+        console.error('Error during Spotify callback', err);
         res.status(500).send('Error during authentication');
     }
 });

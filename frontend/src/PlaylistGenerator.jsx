@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Playlist from './Playlist'
 
 function PlaylistGenerator() {
@@ -9,14 +9,33 @@ function PlaylistGenerator() {
     const [accessToken, setAccessToken] = useState('');
     const [playlistUrl, setPlaylistUrl] = useState('');
 
-    React.useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('access_token');
-        if (token) {
-            setAccessToken(token);
-            console.log('Got Spotify Access Token:', token)
+    useEffect(() => {
+        let token = null;
+
+        if(window.location.hash) {
+            const hashParams = new URLSearchParams(window.location.hash.substring(1));
+            token = hashParams.get('access_token');
+        } else if (window.location.search) {
+            const searchParams = new URLSearchParams(window.location.search);
+            token = searchParams.get('access_token');
         }
-    }, []);
+
+        if(token) {
+            console.log('Captured Spotify Token:', token);
+            setAccessToken(token);
+            localStorage.setItem('spotify_access_token', token);
+
+            window.history.replaceState(null, '', window.location.pathname);
+        } else {
+            const savedToken = localStorage.getItem('spotify_access_token');
+            if(savedToken) {
+                console.log('Loaded token from Local Storage', savedToken);
+                setAccessToken(savedToken);
+            } else {
+                console.log('No access token found.')
+            }
+        }
+      }, []);
 
     const parsePlaylist = (text) => {
         const lines = text.split('\n').filter(line => line.trim() !== '');
@@ -147,22 +166,11 @@ function PlaylistGenerator() {
                 {loading ? 'Generating...' : 'Generate Playlist'}
             </button>
 
-            <div style = {{marginTop: '2rem'}}>
-                {playlist.length > 0 && (
-                    <Playlist playlist = {playlist}/>
-                )}
-                </div>
             {playlist.length > 0 && (
             <>
             <Playlist playlist= {playlist}/>
             <div style = {{ marginTop: '2rem '}}>
             <h3>Spotify Export</h3>
-            <input
-                type="text"
-                placeholder="paste your spotify access token here"
-                value = {accessToken}
-                onChange={(e) => setAccessToken(e.target.value)}
-                style={{ width: '400px', padding: '0.5rem', marginRight: '1rem '}}/>
                 <button onClick={handleExport} style={{ padding: '0.5rem 1rem '}}>
                     Export to Spotify
                 </button>
