@@ -1,38 +1,146 @@
-.App {
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: white;
+  color: #000;
+  min-height: 100vh;
+  padding: 0;
+}
+
+.container {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.title {
+  font-family: 'Merriweather', serif;
+  color: #7C0A02;
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.input-group{
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  margin-bottom: 2rem;
+}
+
+.input {
+  width: 400px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px 0 0 8px;
+  outline: none;
+}
+
+.generate-btn {
+  background-color: #7C0A02;
   color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 0 8px 8px 0;
+  transition: transform 0.2s, background-color 0.3s;
 }
 
-.App-link {
-  color: #61dafb;
+.generate-btn:hover {
+  background-color: #5A0600;
+  transform: scale(1.05);
 }
 
-@keyframes App-logo-spin {
+.spotify-btn {
+  background-color: #7C0A02;
+  color: white;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 2rem;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.spotify-btn:hover {
+  background-color: #5A0600;
+  transform: scale(1.05);
+}
+
+.playlist-section {
+  margin-top: 2rem;
+}
+
+.track {
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+  opacity: 0;
+  animation: fadeInUp 0.5s forwards;
+}
+
+@keyframes fadeInUp {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
+    transform: translateY(10px);
   }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateY(0);
   }
+}
+
+.fade-in {
+  animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; }
+  to {opacity: 1;}
+}
+
+.dot-bounce {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dot-bounce div {
+  width: 8px;
+  height: 8px;
+  margin: 0 3px;
+  background-color: white;
+  border-radius: 50%;
+  animation: dotBounce 0.6s infinite alternate;
+}
+
+.dot-bounce div:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot-bounce div:nth-child(3){
+  animation-delay: 0.4s;
+}
+
+@keyframes dotBounce {
+  to {
+    transform: translateY(-8px);
+  }  
+}
+
+.export-section {
+  margin-top: 3rem;
+}
+
+.link-section a {
+  color: #7C0A02;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.link-section a:hover{
+  text-decoration: underline;
 }

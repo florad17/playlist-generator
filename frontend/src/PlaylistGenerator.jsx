@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import './App.css';
 import Playlist from './Playlist'
 
 function PlaylistGenerator() {
     const [prompt, setPrompt] = useState ('');
     const [playlist, setPlaylist] = useState([]);
     const [loading, setLoading] = useState(false);
-
     const [accessToken, setAccessToken] = useState('');
     const [playlistUrl, setPlaylistUrl] = useState('');
+    const [exportLoading, setExportLoading] = useState(false);
 
     useEffect(() => {
         let token = null;
@@ -24,7 +25,6 @@ function PlaylistGenerator() {
             console.log('Captured Spotify Token:', token);
             setAccessToken(token);
             localStorage.setItem('spotify_access_token', token);
-
             window.history.replaceState(null, '', window.location.pathname);
         } else {
             const savedToken = localStorage.getItem('spotify_access_token');
@@ -40,7 +40,7 @@ function PlaylistGenerator() {
     const parsePlaylist = (text) => {
         const lines = text.split('\n').filter(line => line.trim() !== '');
 
-        return lines.map(line => {
+        return lines.slice(0, 20).map(line => {
             const regex = /^\d+\.\s*(.+?)\s*-+\s*(.+)$/;
             const match = line.match(regex);
 
@@ -67,7 +67,8 @@ function PlaylistGenerator() {
 
         Important:
         Format the playlist strictly as a numbered list like "1. Song Name -- Artist name" with NO extra commentary, desciptions, or explanations.
-        Only return the list, nothing else
+        Only return the list, nothing else.
+        At least 20 songs if possible.
         `;
 
         try {
@@ -86,13 +87,6 @@ function PlaylistGenerator() {
                 throw new Error(errorText);
             }
             const data = await res.json();
-
-            console.log('Backend data respone correct', data);
-
-            if(!data.playlist){
-                console.error('no playlist received');
-            }
-
             const parsed = parsePlaylist(data.playlist);
             console.log('parsed playlist array: ', parsed);
             setPlaylist(parsed)
@@ -105,24 +99,19 @@ function PlaylistGenerator() {
     };
 
     const handleExport = async () => {
-        console.log('Exporting playlist with token:', accessToken);
         if(!accessToken) {
             alert('Please login with Spotify.');
             return;
         }
+        setExportLoading(true);
         try {
-            console.log('Exporting with payload: ', {
-                playlistName: `Generated Playlist - ${prompt}`,
-                tracks: playlist,
-                accessToken: accessToken
-            });
             const res = await fetch('http://localhost:3001/export-playlist', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    playlistName: `Generated Playlist - ${prompt}`,
+                    playlistName: `Generated Playlist - Fordham NOW`,
                     tracks: playlist,
                     accessToken: accessToken
                 })
@@ -134,58 +123,75 @@ function PlaylistGenerator() {
             }
 
             const data = await res.json();
-            console.log('Export success:', data);
             alert('Playlist successfully exported to Spotify!');
             setPlaylistUrl(data.playlistUrl)
         } catch (error) {
             console.error('Error exporting to Spotfy: ', error);
             alert('Failed to export playlist.');
+        } finally {
+            setExportLoading(false);
         }
     };
 
     return (
-        <div style = {{padding: '2rem'}}>
-            <h1> Playlist Generator</h1>
-            <button
-                onClick={() => window.location.href = 'http://localhost:3001/auth/spotify'}
-                style = {{marginBottom: '2rem', padding: '0.5rem 1rem', backgroundColor: '#1db964', color: 'white', border: 'none', borderRadius: '8px'}}>
-                    Login with Spotify
-            </button>
-            <input
-                type="text"
-                value = {prompt}
-                onChange ={(e) => setPrompt(e.target.value)}
-                placeholder="Type your playlist idea.."
-                style = {{width: '400px', padding: '0.5rem'}}
-            />
-
-            <button
-                onClick = {handleGenerate}
-                style = {{marginLeft: '1rem', padding: '0.5rem 1rem'}}
-            >
-                {loading ? 'Generating...' : 'Generate Playlist'}
-            </button>
-
-            {playlist.length > 0 && (
-            <>
-            <Playlist playlist= {playlist}/>
-            <div style = {{ marginTop: '2rem '}}>
-            <h3>Spotify Export</h3>
-                <button onClick={handleExport} style={{ padding: '0.5rem 1rem '}}>
-                    Export to Spotify
+        <div className="container fade-in">
+            <h1 className="title"> Playlist Generator</h1>
+            {!accessToken && (
+                <button
+                    onClick={() => window.location.href = 'https://fa23-68-195-93-29.ngrok-free.app/auth/spotify'}
+                    className="spotify-btn"
+                    >
+                        Login with Spotify
+                    </button>
+            )}
+            <div className="input-group">
+                <input 
+                    type="text"
+                    value = {prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    placeholder="Type your playlist idea..."
+                    className="input"
+                />
+                <button onClick={handleGenerate} className="generate-btn">
+                    {loading ? (
+                        <div className="dot-bounce">
+                            <div></div><div></div><div></div>
+                        </div>
+                    ) : (
+                        'Generate Playlist'
+                    )}
                 </button>
             </div>
-            {playlistUrl && (
-                <div style = {{ marginTop : '1rem' }}>
-                <a href = {playlistUrl} target="_blank" rel = "noopoener noreferrer">
-                    Open your new spotify plalist
-                </a>
-                </div>
-            )}
-            </>
-        )}
-        </div>
 
+            <div className="playlist-section">
+                {playlist.map((track, index) => (
+                    <div className="track fade-in-up" key={index}>
+                        {track.name} - {track.artist}
+                    </div>
+                ))}
+            </div>
+
+            {playlist.length > 0 && (
+                <div className="export-section">
+                    <button onClick={handleExport} className="spotify-btn">
+                        {exportLoading ? (
+                            <div className="dot-bounce">
+                                <div></div><div></div><div></div>
+                            </div>
+                        ) : (
+                            "Export to Spotify"
+                        )}
+                    </button>
+                    {playlistUrl && (
+                        <div className="link-section">
+                            <a href = {playlistUrl} target="_blank" rel = "noopener noreferrer">
+                                Open your new Spotify Playlist!
+                            </a>
+                        </div>
+                    )}
+                </div>
+            )} 
+        </div>
     );
 }
 
