@@ -9,6 +9,7 @@ function PlaylistGenerator() {
     const [accessToken, setAccessToken] = useState('');
     const [playlistUrl, setPlaylistUrl] = useState('');
     const [exportLoading, setExportLoading] = useState(false);
+    
 
     useEffect(() => {
         let token = null;
@@ -133,6 +134,14 @@ function PlaylistGenerator() {
         }
     };
 
+    const handleReset = () => {
+        setPlaylist([]);
+        setPrompt('');
+        setPlaylistUrl('');
+        setLoading(false);
+        setExportLoading(false);
+    }
+
     return (
         <div className="container fade-in">
             <h1 className="title"> Playlist Generator</h1>
@@ -145,6 +154,8 @@ function PlaylistGenerator() {
                     </button>
             )}
             <div className="input-group">
+            {playlist.length === 0 ? (
+                <>
                 <input 
                     type="text"
                     value = {prompt}
@@ -161,15 +172,20 @@ function PlaylistGenerator() {
                         'Generate Playlist'
                     )}
                 </button>
+                </>
+            ) : (
+                <button onClick={handleReset} className="generate-btn">
+                    Generate New Playlist
+                </button>
+                )}
             </div>
-
-            <div className="playlist-section">
-                {playlist.map((track, index) => (
-                    <div className="track fade-in-up" key={index}>
-                        {track.name} - {track.artist}
-                    </div>
-                ))}
+    <div className="playlist-section">
+        {playlist.map((track, index) => (
+            <div className="track fade-in-up" key={index}>
+                {track.name} - {track.artist}
             </div>
+        ))}
+    </div>
 
             {playlist.length > 0 && (
                 <div className="export-section">
@@ -190,7 +206,7 @@ function PlaylistGenerator() {
                         </div>
                     )}
                 </div>
-            )} 
+            )}
         </div>
     );
 }
