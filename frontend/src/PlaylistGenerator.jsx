@@ -9,9 +9,11 @@ function PlaylistGenerator() {
     const [accessToken, setAccessToken] = useState('');
     const [playlistUrl, setPlaylistUrl] = useState('');
     const [exportLoading, setExportLoading] = useState(false);
+    const [tokenExpiration, setTokenExpiration] = useState(null);
     
 
     useEffect(() => {
+        
         let token = null;
 
         if(window.location.hash) {
@@ -25,18 +27,27 @@ function PlaylistGenerator() {
         if(token) {
             console.log('Captured Spotify Token:', token);
             setAccessToken(token);
+            setTokenExpiration(Date.now() + (3600*1000));
             localStorage.setItem('spotify_access_token', token);
+            localStorage.setItem('spotify_token_expiration', (Date.now() + (3600 * 1000)).toString())
             window.history.replaceState(null, '', window.location.pathname);
         } else {
             const savedToken = localStorage.getItem('spotify_access_token');
-            if(savedToken) {
+            const savedExpiration = localStorage.getItem('spotify_token_expiration');
+            if(savedToken && savedExpiration && Date.now() < parseInt(savedExpiration)) {
                 console.log('Loaded token from Local Storage', savedToken);
                 setAccessToken(savedToken);
+                setTokenExpiration(parseInt(savedExpiration));
             } else {
                 console.log('No access token found.')
             }
         }
       }, []);
+
+      const isTokenExpired = () => {
+        if (!tokenExpiration) return true;
+        return Date.now() > tokenExpiration;
+    }
 
     const parsePlaylist = (text) => {
         const lines = text.split('\n').filter(line => line.trim() !== '');
@@ -145,9 +156,9 @@ function PlaylistGenerator() {
     return (
         <div className="container fade-in">
             <h1 className="title"> Playlist Generator</h1>
-            {!accessToken && (
+            {(!accessToken || isTokenExpired()) && (
                 <button
-                    onClick={() => window.location.href = 'https://fa23-68-195-93-29.ngrok-free.app/auth/spotify'}
+                    onClick={() => window.location.href = 'https://e960-150-108-240-113.ngrok-free.app/auth/spotify'}
                     className="spotify-btn"
                     >
                         Login with Spotify
