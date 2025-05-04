@@ -5,7 +5,7 @@ const axios = require('axios');
 const SpotifyWebApi = require('spotify-web-api-node');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 const cors = require('cors');
 
 global.fetch = fetch;
@@ -104,7 +104,7 @@ app.post('/generate-playlist', async (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`)
+    console.log(`Server runnong on port ${port}`)
 })
 
 app.post('/export-playlist', async (req, res) => {
