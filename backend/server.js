@@ -31,9 +31,9 @@ const spotifyApi = new SpotifyWebApi({
 
 
 app.get('/auth/spotify', (req, res) => {
-    const scopes = ['user-library-read', 'playlist-modify-public'];
-    const authorizeURL = spotifyApi.createAuthorizeURL(scopes, 'state');
-    res.redirect(authorizeURL)
+    const scopes = ['playlist-modify-public'];
+    const authUrl = spotifyApi.createAuthorizeURL(scopes);
+    res.redirect(authUrl);
 })
 
 app.get('/callback', async (req, res) => {
