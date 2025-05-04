@@ -21,7 +21,7 @@ function PlaylistGenerator() {
             console.log('Access token found in hash: ', token);
 
             if (token) {
-                console.log('Captured Spotfy token: ', token);
+                console.log('Captured Spotify token: ', token);
                 setAccessToken(token);
                 setTokenExpiration(Date.now() + 3600 * 1000);
                 localStorage.setItem('spotify_access_token', token);
