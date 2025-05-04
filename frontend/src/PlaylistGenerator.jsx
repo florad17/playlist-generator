@@ -158,7 +158,7 @@ function PlaylistGenerator() {
             <h1 className="title"> Playlist Generator</h1>
             {(!accessToken || isTokenExpired()) && (
                 <button
-                    onClick={() => window.location.href = 'https://e960-150-108-240-113.ngrok-free.app/auth/spotify'}
+                    onClick={() => window.location.href = 'https://playlist-generator-d0lw.onrender.com/auth/spotify'}
                     className="spotify-btn"
                     >
                         Login with Spotify
