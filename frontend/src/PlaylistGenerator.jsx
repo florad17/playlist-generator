@@ -84,7 +84,7 @@ function PlaylistGenerator() {
         `;
 
         try {
-            const res = await fetch('http://localhost:3001/generate-playlist', {
+            const res = await fetch('https://playlist-generator-d0lw.onrender.com/generate-playlist', {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json'
@@ -117,7 +117,7 @@ function PlaylistGenerator() {
         }
         setExportLoading(true);
         try {
-            const res = await fetch('http://localhost:3001/export-playlist', {
+            const res = await fetch('https://playlist-generator-d0lw.onrender.com/export-playlist', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
