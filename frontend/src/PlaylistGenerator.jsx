@@ -19,35 +19,30 @@ function PlaylistGenerator() {
         if(window.location.hash) {
             const hashParams = new URLSearchParams(window.location.hash.substring(1));
             token = hashParams.get('access_token');
-        } else if (window.location.search) {
-            const searchParams = new URLSearchParams(window.location.search);
-            token = searchParams.get('access_token');
-        }
+            console.log('Access token found in hash: ', token);
 
-        if(token) {
-            console.log('Captured Spotify Token:', token);
-            setAccessToken(token);
-            setTokenExpiration(Date.now() + (3600*1000));
-            localStorage.setItem('spotify_access_token', token);
-            localStorage.setItem('spotify_token_expiration', (Date.now() + (3600 * 1000)).toString())
-            window.history.replaceState(null, '', window.location.pathname);
-        } else {
-            const savedToken = localStorage.getItem('spotify_access_token');
-            const savedExpiration = localStorage.getItem('spotify_token_expiration');
-            if(savedToken && savedExpiration && Date.now() < parseInt(savedExpiration)) {
-                console.log('Loaded token from Local Storage', savedToken);
-                setAccessToken(savedToken);
-                setTokenExpiration(parseInt(savedExpiration));
-            } else {
-                console.log('No access token found.')
+            if (token) {
+                setAccessToken(token);
+                setTokenExpiration(Date.now() + 3600 * 1000);
+                localStorage.setItem('spotify_access_token', token);
+                localStorage.setItem('spotify_token_expiration', (Date.now() + 3600 * 1000).toString());
+
+                window.history.replaceState(null, '', window.location.pathname);
+                return;
             }
+        } 
+
+        const savedToken = localStorage.getItem('spotify_access_token');
+        const savedExpiration = localStorage.getItem('spotify_token_expiration');
+
+        if(savedToken && savedExpiration && Date.now() < parseInt(savedExpiration)) {
+            console.log('Using saved token from localStorage');
+            setAccessToken(savedToken)
+            setTokenExpiration(parseInt(savedExpiration));
+        } else {
+            console.log('No access token found');
         }
       }, []);
-
-      const isTokenExpired = () => {
-        if (!tokenExpiration) return true;
-        return Date.now() > tokenExpiration;
-    }
 
     const parsePlaylist = (text) => {
         const lines = text.split('\n').filter(line => line.trim() !== '');
