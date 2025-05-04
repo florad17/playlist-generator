@@ -51,7 +51,7 @@ app.get('/callback', async (req, res) => {
         spotifyApi.setAccessToken(accessToken);
         spotifyApi.setRefreshToken(refreshToken);
 
-        res.redirect(`https://playlist-generator-olive.vercel.app/?access_token=${accessToken}`)
+        res.redirect(`https://playlist-generator-olive.vercel.app/#access_token=${accessToken}`)
     } catch (err) {
         console.error('Error during Spotify callback', err);
         res.status(500).send('Error during authentication');
