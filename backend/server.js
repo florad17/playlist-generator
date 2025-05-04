@@ -14,6 +14,12 @@ global.Headers = Headers;
 app.use(cors());
 app.use(express.json());
 
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/', (req, res) => {
+    res.send('Backend is working');
+});
+
 const ai = new GoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const spotifyApi = new SpotifyWebApi({

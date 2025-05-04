@@ -84,7 +84,7 @@ function PlaylistGenerator() {
         `;
 
         try {
-            const res = await fetch('https://playlist-generator-d0lw.onrender.com/generate-playlist', {
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/generate-playlist`, {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json'
@@ -117,7 +117,7 @@ function PlaylistGenerator() {
         }
         setExportLoading(true);
         try {
-            const res = await fetch('https://playlist-generator-d0lw.onrender.com/export-playlist', {
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/export-playlist`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -158,7 +158,7 @@ function PlaylistGenerator() {
             <h1 className="title"> Playlist Generator</h1>
             {(!accessToken || isTokenExpired()) && (
                 <button
-                    onClick={() => window.location.href = 'https://playlist-generator-d0lw.onrender.com/auth/spotify'}
+                    onClick={() => window.location.href = `${process.env.REACT_APP_BACKEND_URL}/auth/spotify`}
                     className="spotify-btn"
                     >
                         Login with Spotify
