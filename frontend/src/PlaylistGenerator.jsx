@@ -40,9 +40,14 @@ function PlaylistGenerator() {
             setAccessToken(savedToken)
             setTokenExpiration(parseInt(savedExpiration));
         } else {
-            console.log('No access token found');
+            console.log('No access token found')
         }
       }, []);
+
+      const isTokenExpired = () => {
+        if (!tokenExpiration) return true;
+        return Date.now() > tokenExpiration;
+    }
 
     const parsePlaylist = (text) => {
         const lines = text.split('\n').filter(line => line.trim() !== '');
