@@ -3,7 +3,7 @@ const {fetch, Headers } = require('undici');
 const express = require('express');
 const axios = require('axios');
 const SpotifyWebApi = require('spotify-web-api-node');
-const { GoogleGenAI } = require('@google/genai');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 const app = express();
 const port = 3001;
 const cors = require('cors');
@@ -14,7 +14,7 @@ global.Headers = Headers;
 app.use(cors());
 app.use(express.json());
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY});
+const ai = new GoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const spotifyApi = new SpotifyWebApi({
     clientId: process.env.SPOTIFY_CLIENT_ID,
