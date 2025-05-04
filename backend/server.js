@@ -7,6 +7,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 const app = express();
 const port = process.env.PORT || 3001;
 const cors = require('cors');
+const path = require('path');
 
 global.fetch = fetch;
 global.Headers = Headers;
