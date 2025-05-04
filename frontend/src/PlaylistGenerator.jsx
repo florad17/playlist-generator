@@ -13,7 +13,6 @@ function PlaylistGenerator() {
     
 
     useEffect(() => {
-        
         let token = null;
 
         if(window.location.hash) {
@@ -22,10 +21,15 @@ function PlaylistGenerator() {
             console.log('Access token found in hash: ', token);
 
             if (token) {
+                console.log('Captured Spotfy token: ', token);
                 setAccessToken(token);
                 setTokenExpiration(Date.now() + 3600 * 1000);
                 localStorage.setItem('spotify_access_token', token);
-                localStorage.setItem('spotify_token_expiration', (Date.now() + 3600 * 1000).toString());
+                localStorage.setItem(
+                    'spotify_token_expiration', 
+                    (Date.now() + 3600 * 1000).toString()
+                    );
+
 
                 window.history.replaceState(null, '', window.location.pathname);
                 return;
