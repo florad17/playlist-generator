@@ -152,12 +152,14 @@ app.post('/export-playlist', async (req, res) => {
         }
 
         await spotifyApi.addTracksToPlaylist(playlistId.trackUris);
-        
         console.log('Playlist successfully created!');
         return res.json({playlistUrl: `https://open.spotify.com/playlist/${playlistId}`});
     } catch (error) {
-        console.error('Error exporting playlist: ', error);
-        res.status(500).send('Error exporting playlist.');
+        console.error('Expor error stack:', error.stack || error);
+        if (error.body){
+            console.error('Spotify error body:', error.body);
+        }
+        res.status(500).send({error: 'Error exporting playlist.', message: error.message});
     }
 });
 

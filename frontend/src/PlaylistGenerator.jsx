@@ -134,8 +134,8 @@ function PlaylistGenerator() {
             });
 
             if(!res.ok) {
-                const errorText = await res.text();
-                throw new Error(errorText);
+                const errorJson = await res.json().catch(() => ({}));
+                throw new Error(errorJson.message || 'Unknown export error');
             }
 
             const data = await res.json();
