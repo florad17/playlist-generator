@@ -139,7 +139,14 @@ app.post('/export-playlist', async (req, res) => {
         return res.json({playlistUrl: `https://open.spotify.com/playlist/${playlistId}`});
     } catch (err) {
         console.error('Export error', err.message || err);
-        return res.status(500).send({error: 'Error exporting playlist.', message: err.message});
+        if (err.body) {
+            console.error('Spotify error body:', JSON.stringify(err.body, null, 2));
+        }
+        res.status(500).send({
+            error: 'Error exporting playlist.',
+            message: err.message || 'Unknown server error',
+            raw: err.body || null
+        })
     }
 });
 

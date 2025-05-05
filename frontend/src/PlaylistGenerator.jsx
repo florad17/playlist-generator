@@ -149,6 +149,7 @@ function PlaylistGenerator() {
 
             if(!res.ok) {
                 const errorJson = await res.json().catch(() => ({}));
+                console.error('Server export error:', errorJson);
                 throw new Error(errorJson.message || 'Unknown export error');
             }
 
