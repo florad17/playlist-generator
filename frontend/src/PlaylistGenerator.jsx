@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Playlist from './Playlist'
+const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://playlist-generator-d0lw.onrender.com';
 
 function PlaylistGenerator() {
     const [prompt, setPrompt] = useState ('');
@@ -28,7 +29,15 @@ function PlaylistGenerator() {
                 localStorage.setItem('spotify_access_token', token);
                 localStorage.setItem('spotify_token_expiration', expiration.toString());
                 window.history.replaceState(null, '', window.location.pathname);
+                sessionStorage.removeItem('redirectedOnce')
                 return;
+            } else {
+                console.log('No access token found. Redirecting to Spotify login.');
+                const hasRedirected = sessionStorage.getItem('redirectedOnce');
+                if(!hasRedirected) {
+                    sessionStorage.setItem('redirectOnce', 'true');
+                    window.location.href = `${backendUrl}/auth/spotify`;
+                }
             }
         } 
 
@@ -45,11 +54,11 @@ function PlaylistGenerator() {
             console.log('Saved token is expired. Re-authenticating...');
             localStorage.removeItem('spotify_access_token');
             localStorage.removeItem('spotify_token_expiration');
-            window.location.href = `${process.env.REACT_APP_BACKEND_URL}/auth/spotify`
+            window.location.href = `${process.env.backendUrl}/auth/spotify`
         }
     } else {
         console.log('No access token found. Redirecting to Spotify login.');
-        window.location.href = `${process.env.REACT_APP_BACKEND_URL}/auth/spotify`;
+        window.location.href = `${process.env.backendUrl}/auth/spotify`;
     }
       }, []);
 
@@ -92,7 +101,7 @@ function PlaylistGenerator() {
         `;
 
         try {
-            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/generate-playlist`, {
+            const res = await fetch(`${process.env.backendUrl}/generate-playlist`, {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json'
@@ -123,9 +132,16 @@ function PlaylistGenerator() {
             alert('Please login with Spotify.');
             return;
         }
+        if(isTokenExpired()) {
+            alert('Session expired. Please log in again');
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = `${backendUrl}/auth/spotify`;
+            return;
+        }
         setExportLoading(true);
         try {
-            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/export-playlist`, {
+            const res = await fetch(`${process.env.backendUrl}/export-playlist`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -154,7 +170,7 @@ function PlaylistGenerator() {
             ) {
                 alert('Your Spotify sesion expired or has missing permissions. Re-authenicating...');
                 localStorage.removeItem('spotify_access_token');
-                window.location.href = `${process.env.REACT_APP_BACKEND_URL}/auth/spotify`;
+                window.location.href = `${process.env.backendUrl}/auth/spotify`;
                 return;
             }
             alert('Failed to export playlist.');
@@ -176,7 +192,7 @@ function PlaylistGenerator() {
             <h1 className="title"> Playlist Generator</h1>
             {(!accessToken || isTokenExpired()) && (
                 <button
-                    onClick={() => window.location.href = `${process.env.REACT_APP_BACKEND_URL}/auth/spotify`}
+                    onClick={() => window.location.href = `${process.env.backendUrl}/auth/spotify`}
                     className="spotify-btn"
                     >
                         Login with Spotify

@@ -18,17 +18,8 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
-app.get('/', (req, res) => {
-    res.send('Backend is working');
-});
-
-const spotifyApi = new SpotifyWebApi({
-    clientId: process.env.SPOTIFY_CLIENT_ID,
-    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-    redirectUri: process.env.SPOTIFY_REDIRECT_URI,
-});
-
+const clientId = process.env.SPOTIFY_CLIENT_ID;
+const redirectUri = proces.env.SPOTIFY_REDIRECT_URI;
 const pkceStore = new Map();
 
 function generateCodeVerifier() {
