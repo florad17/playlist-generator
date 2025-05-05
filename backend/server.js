@@ -123,13 +123,10 @@ app.post('/export-playlist', async (req, res) => {
     }
 
     try {
-
-        const spotifyApi = new SpotifyWebApi();
         spotifyApi.setAccessToken(accessToken);
 
         const me = await spotifyApi.getMe();
         const userId = me.body.id;
-
         console.log('Exporting playlist for user:', userId);
 
         const newPlaylist = await spotifyApi.createPlaylist(playlistName, { public: true });
@@ -138,7 +135,6 @@ app.post('/export-playlist', async (req, res) => {
             throw new Error('Failed to create playlist.');
         }
         const playlistId = newPlaylist.body.id;
-        
         const trackUris = [];
 
         for (const track of tracks) {
@@ -151,16 +147,16 @@ app.post('/export-playlist', async (req, res) => {
 
         console.log('Found', trackUris.length, 'track URIs.');
 
-        if (trackUris.length > 0) {
-            await spotifyApi.addTracksToPlaylist(playlistId, trackUris);
-        } else {
-            return res.status(400).json({error: 'No valid tracks found to create playlist.'})
+        if (trackUris.length === 0) {
+            return res.status(400).json({error: 'No valid tracks found.'})
         }
+
+        await spotifyApi.addTracksToPlaylist(playlistId.trackUris);
         
         console.log('Playlist successfully created!');
         return res.json({playlistUrl: `https://open.spotify.com/playlist/${playlistId}`});
     } catch (error) {
-        console.error('Error exporting playlisst: ', error);
+        console.error('Error exporting playlist: ', error);
         res.status(500).send('Error exporting playlist.');
     }
 });
