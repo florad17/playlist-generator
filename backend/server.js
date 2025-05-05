@@ -128,7 +128,7 @@ app.post('/export-playlist', async (req, res) => {
         for (const track of tracks) {
             const query = `${track.name} ${track.artist}`;
             const searchResult = await spotifyApi.searchTracks(query, { limit: 1 });
-            const found = result?.body?.tracks?.items?.[0];
+            const found = searchResult?.body?.tracks?.items?.[0];
             if(found?.uri) trackUris.push(found.uri);
           }
           if (trackUris.length === 0) {
