@@ -49,7 +49,7 @@ function PlaylistGenerator() {
         }
     } 
 
-    if(!sessionStorage.get('redirectedOnce')){
+    if(!sessionStorage.getItem('redirectedOnce')){
         console.log('No token found. Redirecting...');
         sessionStorage.setItem('redirectedOnce', 'true');
         window.location.href = `${backendUrl}/auth/spotify`;
