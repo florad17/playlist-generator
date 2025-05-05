@@ -22,15 +22,11 @@ function PlaylistGenerator() {
 
             if (token) {
                 console.log('Captured Spotify token: ', token);
+                const expiration = Date.now() + 3600 * 1000;
                 setAccessToken(token);
-                setTokenExpiration(Date.now() + 3600 * 1000);
+                setTokenExpiration(expiration);
                 localStorage.setItem('spotify_access_token', token);
-                localStorage.setItem(
-                    'spotify_token_expiration', 
-                    (Date.now() + 3600 * 1000).toString()
-                    );
-
-
+                localStorage.setItem('spotify_token_expiration', expiration.toString());
                 window.history.replaceState(null, '', window.location.pathname);
                 return;
             }
@@ -39,13 +35,22 @@ function PlaylistGenerator() {
         const savedToken = localStorage.getItem('spotify_access_token');
         const savedExpiration = localStorage.getItem('spotify_token_expiration');
 
-        if(savedToken && savedExpiration && Date.now() < parseInt(savedExpiration)) {
-            console.log('Using saved token from localStorage');
-            setAccessToken(savedToken)
-            setTokenExpiration(parseInt(savedExpiration));
+        if(savedToken && savedExpiration) {
+            const expiration = parseInt(savedExpiration);
+            if (Date.now() < expiration) {
+                console.log('Using saved token from localStorage');
+                setAccessToken(savedToken);
+                setTokenExpiration(expiration);
         } else {
-            console.log('No access token found')
+            console.log('Saved token is expired. Re-authenticating...');
+            localStorage.removeItem('spotify_access_token');
+            localStorage.removeItem('spotify_token_expiration');
+            window.location.href = `${process.env.REACT_APP_BACKEND_URL}/auth/spotify`
         }
+    } else {
+        console.log('No access token found. Redirecting to Spotify login.');
+        window.location.href = `${process.env.REACT_APP_BACKEND_URL}/auth/spotify`;
+    }
       }, []);
 
       const isTokenExpired = () => {

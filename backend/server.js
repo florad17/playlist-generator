@@ -125,6 +125,11 @@ app.post('/export-playlist', async (req, res) => {
     try {
         spotifyApi.setAccessToken(accessToken);
 
+        await spotifyApi.getMe().catch(err => {
+            console.error('Invalid token during export:', err.body || err.message);
+            return res.status(401).json({error: 'Invalid or expired token'});
+        })
+
         const me = await spotifyApi.getMe();
         const userId = me.body.id;
         console.log('Exporting playlist for user:', userId);
