@@ -95,7 +95,7 @@ function PlaylistGenerator() {
         `;
 
         try {
-            const res = await fetch(`${process.env.backendUrl}/generate-playlist`, {
+            const res = await fetch(`${backendUrl}/generate-playlist`, {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json'
@@ -135,7 +135,7 @@ function PlaylistGenerator() {
         }
         setExportLoading(true);
         try {
-            const res = await fetch(`${process.env.backendUrl}/export-playlist`, {
+            const res = await fetch(`${backendUrl}/export-playlist`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -164,7 +164,7 @@ function PlaylistGenerator() {
             ) {
                 alert('Your Spotify sesion expired or has missing permissions. Re-authenicating...');
                 localStorage.removeItem('spotify_access_token');
-                window.location.href = `${process.env.backendUrl}/auth/spotify`;
+                window.location.href = `${backendUrl}/auth/spotify`;
                 return;
             }
             alert('Failed to export playlist.');
@@ -186,7 +186,7 @@ function PlaylistGenerator() {
             <h1 className="title"> Playlist Generator</h1>
             {(!accessToken || isTokenExpired()) && (
                 <button
-                    onClick={() => window.location.href = `${process.env.backendUrl}/auth/spotify`}
+                    onClick={() => window.location.href = `${backendUrl}/auth/spotify`}
                     className="spotify-btn"
                     >
                         Login with Spotify
