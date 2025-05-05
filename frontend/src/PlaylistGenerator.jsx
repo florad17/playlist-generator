@@ -22,22 +22,15 @@ function PlaylistGenerator() {
             console.log('Access token found in hash: ', token);
 
             if (token) {
-                console.log('Captured Spotify token: ', token);
                 const expiration = Date.now() + 3600 * 1000;
                 setAccessToken(token);
                 setTokenExpiration(expiration);
                 localStorage.setItem('spotify_access_token', token);
                 localStorage.setItem('spotify_token_expiration', expiration.toString());
-                window.history.replaceState(null, '', window.location.pathname);
+                
                 sessionStorage.removeItem('redirectedOnce')
+                window.history.replaceState(null, '', window.location.pathname);
                 return;
-            } else {
-                console.log('No access token found. Redirecting to Spotify login.');
-                const hasRedirected = sessionStorage.getItem('redirectedOnce');
-                if(!hasRedirected) {
-                    sessionStorage.setItem('redirectOnce', 'true');
-                    window.location.href = `${backendUrl}/auth/spotify`;
-                }
             }
         } 
 
@@ -51,14 +44,15 @@ function PlaylistGenerator() {
                 setAccessToken(savedToken);
                 setTokenExpiration(expiration);
         } else {
-            console.log('Saved token is expired. Re-authenticating...');
             localStorage.removeItem('spotify_access_token');
             localStorage.removeItem('spotify_token_expiration');
-            window.location.href = `${process.env.backendUrl}/auth/spotify`
         }
-    } else {
-        console.log('No access token found. Redirecting to Spotify login.');
-        window.location.href = `${process.env.backendUrl}/auth/spotify`;
+    } 
+
+    if(!sessionStorage.get('redirectedOnce')){
+        console.log('No token found. Redirecting...');
+        sessionStorage.setItem('redirectedOnce', 'true');
+        window.location.href = `${backendUrl}/auth/spotify`;
     }
       }, []);
 
