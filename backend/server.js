@@ -137,6 +137,9 @@ app.post('/export-playlist', async (req, res) => {
         const playlistId = newPlaylist.body.id;
         const trackUris = [];
 
+        console.log('Tracks received from frontend: ');
+        tracks.forEach((t, i) => console.log(`${i+1}. ${t.name} - ${t.artist}`));
+
         for (const track of tracks) {
             try {
               const query = `${track.name} ${track.artist}`;
@@ -153,7 +156,6 @@ app.post('/export-playlist', async (req, res) => {
               console.error(`Error searching for: ${track.name} - ${track.artist}`, err.message);
             }
           }
-          
           if (trackUris.length === 0) {
             return res.status(400).json({ error: 'No valid tracks found to create playlist.' });
           }
