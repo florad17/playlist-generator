@@ -57,12 +57,11 @@ function PlaylistGenerator() {
         const lines = text.split('\n').filter(line => line.trim() !== '');
 
         return lines.slice(0, 20).map(line => {
-            const regex = /^\d+\.\s*(.+?)\s*-+\s*(.+)$/;
+            const regex = /^\d+\.\s*(.+?)\s*--+\s*(.+)$/;
             const match = line.match(regex);
-
-            if(match){
-                return{name: match[1].trim(), artist: match[2].trim(), url: "#"};
-            }
+            if (match && match[1] && match[2]) {
+                return { name: match[1].trim(), artist: match[2].trim(), url: '#' };
+              }
             return null;
         }).filter(Boolean);
     };
