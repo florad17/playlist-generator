@@ -139,22 +139,24 @@ app.post('/export-playlist', async (req, res) => {
 
         for (const track of tracks) {
             try {
-                const searchResult = await spotifyApi.searchTracks(`${track.name} ${track.artist}`, { limit: 1 });
-                const foundTrack = searchResult.body.tracks.items[0];
-
-            if (foundTrack) {
+              const query = `${track.name} ${track.artist}`;
+              const searchResult = await spotifyApi.searchTracks(query, { limit: 1 });
+              const foundTrack = searchResult?.body?.tracks?.items?.[0];
+          
+              if (foundTrack && foundTrack.uri) {
                 trackUris.push(foundTrack.uri);
-                } else {
-                    console.warm(`No match found for ${track.name} by ${track.artist}`);
-                }
-             } catch (err) {
-                    console.err(`Track search failed for "${track.name} - ${track.artist}:":`, err.message);
+                console.log(`✅ Found: ${foundTrack.name} - ${foundTrack.artists[0].name}`);
+              } else {
+                console.warn(`❌ Not found: ${query}`);
+              }
+            } catch (err) {
+              console.error(`Error searching for: ${track.name} - ${track.artist}`, err.message);
             }
-        }
-
-        if (trackUris.length === 0) {
-            return res.status(400).json({error: 'No valid tracks found.'})
-        }
+          }
+          
+          if (trackUris.length === 0) {
+            return res.status(400).json({ error: 'No valid tracks found to create playlist.' });
+          }
 
         await spotifyApi.addTracksToPlaylist(playlistId.trackUris);
         console.log('Playlist successfully created!');
