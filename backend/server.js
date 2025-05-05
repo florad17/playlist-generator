@@ -160,7 +160,7 @@ app.post('/export-playlist', async (req, res) => {
             return res.status(400).json({ error: 'No valid tracks found to create playlist.' });
           }
 
-        await spotifyApi.addTracksToPlaylist(playlistId.trackUris);
+        await spotifyApi.addTracksToPlaylist(playlistId, trackUris);
         console.log('Playlist successfully created!');
         return res.json({playlistUrl: `https://open.spotify.com/playlist/${playlistId}`});
     } catch (error) {
