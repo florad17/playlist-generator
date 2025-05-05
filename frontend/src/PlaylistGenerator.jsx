@@ -143,6 +143,16 @@ function PlaylistGenerator() {
             setPlaylistUrl(data.playlistUrl)
         } catch (error) {
             console.error('Error exporting to Spotfy: ', error);
+            if (
+                error.message?.includes('403') ||
+                error.message?.toLowerCase().includes('invalid token') ||
+                error.message?.toLowerCase().includes('access token')
+            ) {
+                alert('Your Spotify sesion expired or has missing permissions. Re-authenicating...');
+                localStorage.removeItem('spotify_access_token');
+                window.location.href = 'https://playlist-generator-d0lw.onrender.com/auth/spotify';
+                return;
+            }
             alert('Failed to export playlist.');
         } finally {
             setExportLoading(false);
