@@ -131,7 +131,7 @@ function PlaylistGenerator() {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    playlistName: `Generated Playlist - Fordham NOW`,
+                    playlistName: `Generated Playlist - Fordham 2025`,
                     tracks: playlist,
                     accessToken: accessToken
                 })
