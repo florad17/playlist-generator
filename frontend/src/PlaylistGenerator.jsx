@@ -149,7 +149,7 @@ function PlaylistGenerator() {
             ) {
                 alert('Your Spotify sesion expired or has missing permissions. Re-authenicating...');
                 localStorage.removeItem('spotify_access_token');
-                window.location.href = 'https://playlist-generator-d0lw.onrender.com/auth/spotify';
+                window.location.href = `${process.env.REACT_APP_BACKEND_URL}/auth/spotify`;
                 return;
             }
             alert('Failed to export playlist.');
