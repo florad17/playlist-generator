@@ -124,7 +124,8 @@ app.post('/export-playlist', async (req, res) => {
         console.log('Exporting playlist for user:', userId);
 
         const trackUris = [];
-
+        const newPlaylist = await spotifyApi.createPlaylist(playlistName, {public: true});
+        const playlistId = newPlaylist.body.id;
         for (const track of tracks) {
             const query = `${track.name} ${track.artist}`;
             const searchResult = await spotifyApi.searchTracks(query, { limit: 1 });
@@ -137,7 +138,7 @@ app.post('/export-playlist', async (req, res) => {
         await spotifyApi.addTracksToPlaylist(playlistId, trackUris);
         return res.json({playlistUrl: `https://open.spotify.com/playlist/${playlistId}`});
     } catch (err) {
-        console.error('Expor error', err.message || err);
+        console.error('Export error', err.message || err);
         return res.status(500).send({error: 'Error exporting playlist.', message: err.message});
     }
 });
