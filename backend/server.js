@@ -138,14 +138,19 @@ app.post('/export-playlist', async (req, res) => {
         const trackUris = [];
 
         for (const track of tracks) {
-            const searchResult = await spotifyApi.searchTracks(`${track.name} ${track.artist}`, { limit: 1 });
-            const foundTrack = searchResult.body.tracks.items[0];
+            try {
+                const searchResult = await spotifyApi.searchTracks(`${track.name} ${track.artist}`, { limit: 1 });
+                const foundTrack = searchResult.body.tracks.items[0];
+
             if (foundTrack) {
                 trackUris.push(foundTrack.uri);
+                } else {
+                    console.warm(`No match found for ${track.name} by ${track.artist}`);
                 }
+             } catch (err) {
+                    console.err(`Track search failed for "${track.name} - ${track.artist}:":`, err.message);
+            }
         }
-
-        console.log('Found', trackUris.length, 'track URIs.');
 
         if (trackUris.length === 0) {
             return res.status(400).json({error: 'No valid tracks found.'})
