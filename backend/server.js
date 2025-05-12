@@ -124,7 +124,7 @@ app.post('/export-playlist', async (req, res) => {
         console.log('Exporting playlist for user:', userId);
 
         const trackUris = [];
-        const newPlaylist = await spotifyApi.createPlaylist(userId, playlistName, {public: true});
+        const newPlaylist = await spotifyApi.createPlaylist(playlistName, {public: true});
         const playlistId = newPlaylist.body.id;
 
         for (const track of tracks) {
@@ -144,10 +144,23 @@ app.post('/export-playlist', async (req, res) => {
             const data = err.response?.data || err.body;
             console.error('Spotify error response:', JSON.stringify(data, null, 2));
         }
+
+        let message = 'Unknown error';
+        let raw = null;
+
+        if (err.body) {
+            message = typeof err.body === 'string' ? err.body : JSON.stringify(err.body);
+            raw = err.body;
+        } else if (err.response?.data) {
+            message = typeof err.response.data === 'string' ? err.response.date : JSON.stringify(err.response.data);
+            raw = err.response.data;
+        } else {
+            message = err.message || String(err);
+        }
         res.status(500).send({
             error: 'Error exporting playlist.',
-            message: err.message || 'Unknown server error',
-            raw: err.body || null
+            message,
+            raw, 
         })
     }
 });
