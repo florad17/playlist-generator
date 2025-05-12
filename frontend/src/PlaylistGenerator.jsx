@@ -176,7 +176,7 @@ function PlaylistGenerator() {
         } finally {
             setExportLoading(false);
         }
-    */   };
+    */
 
     const handleReset = () => {
         setPlaylist([]);
@@ -226,7 +226,7 @@ function PlaylistGenerator() {
             {playlist.length > 0 && (
                 <div className="export-section">
                     <button onClick={() => {
-                        const plainText = playlist.map((t, i) => `{i+1}. ${t.name} -- ${t.artist}`).join('\n');
+                        const plainText = playlist.map((t, i) => `${i + 1}. ${t.name} -- ${t.artist}`).join('\n');
                         navigator.clipboard.writeText(plainText);
                         alert("Playlist copied to clipboard!");
                     }} className="spotify-btn">
@@ -243,5 +243,7 @@ function PlaylistGenerator() {
             )}
         </div>
     );
+    }
+    
 
 export default PlaylistGenerator;
