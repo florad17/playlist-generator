@@ -45,7 +45,7 @@ app.get('/auth/spotify', (req, res) => {
     ].join(' ');
     const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(
     redirectUri
-  )}&code_challenge_method=S256&code_challenge=${codeChallenge}&state=${state}&scope=${encodeURIComponent(scope)}`; 
+  )}&code_challenge_method=S256&code_challenge=${codeChallenge}&state=${state}&scope=${encodeURIComponent(scope)}&show_dialog=true`; 
 
   res.redirect(authUrl);
 })
@@ -120,6 +120,7 @@ app.post('/export-playlist', async (req, res) => {
         spotifyApi.setAccessToken(accessToken);
 
         const me = await spotifyApi.getMe();
+        consolelog('Authenticated user:', me.body.display_name || me.body.id);
         const userId = me.body.id;
         console.log('Exporting playlist for user:', userId);
 

@@ -50,8 +50,10 @@ function PlaylistGenerator() {
     } 
 
     if(!sessionStorage.getItem('redirectedOnce')){
-        console.log('No token found. Redirecting...');
+        console.log('No token found. Forcing fresh Spotify login...');
         sessionStorage.setItem('redirectedOnce', 'true');
+        localStorage.removeItem('spotify_access_token');
+        localStorage.removeItem('spotify_token_expiration');
         window.location.href = `${backendUrl}/auth/spotify`;
     }
       }, []);
