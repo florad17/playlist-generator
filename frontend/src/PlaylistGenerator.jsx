@@ -7,14 +7,14 @@ function PlaylistGenerator() {
     const [prompt, setPrompt] = useState ('');
     const [playlist, setPlaylist] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [accessToken, setAccessToken] = useState('');
+   // const [accessToken, setAccessToken] = useState('');
     const [playlistUrl, setPlaylistUrl] = useState('');
     const [exportLoading, setExportLoading] = useState(false);
-    const [tokenExpiration, setTokenExpiration] = useState(null);
+  //  const [tokenExpiration, setTokenExpiration] = useState(null);
     
 
     useEffect(() => {
-        let token = null;
+     /*   let token = null;
 
         if(window.location.hash) {
             const hashParams = new URLSearchParams(window.location.hash.substring(1));
@@ -48,7 +48,7 @@ function PlaylistGenerator() {
             localStorage.removeItem('spotify_token_expiration');
         }
     } 
-
+*/
   //  if(!sessionStorage.getItem('redirectedOnce')){
     //    console.log('No token found. Forcing fresh Spotify login...');
       //  sessionStorage.setItem('redirectedOnce', 'true');
@@ -233,15 +233,6 @@ function PlaylistGenerator() {
 
             {playlist.length > 0 && (
                 <div className="export-section">
-                    <button onClick={handleExport} className="spotify-btn">
-                        {exportLoading ? (
-                            <div className="dot-bounce">
-                                <div></div><div></div><div></div>
-                            </div>
-                        ) : (
-                            "Export to Spotify"
-                        )}
-                    </button>
                     <button onClick={() => {
                         const plainText = playlist.map((t, i) => `{i+1}. ${t.name} -- ${t.artist}`).join('\n');
                         navigator.clipboard.writeText(plainText);
