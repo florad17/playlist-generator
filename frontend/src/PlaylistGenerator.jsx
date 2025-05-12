@@ -58,11 +58,11 @@ function PlaylistGenerator() {
   //  }
       }, []);
 
-      const isTokenExpired = () => {
-        if (!tokenExpiration) return true;
-        return Date.now() > tokenExpiration;
-    }
-
+      //const isTokenExpired = () => {
+    //    if (!tokenExpiration) return true;
+  //      return Date.now() > tokenExpiration;
+//    }
+//
     const parsePlaylist = (text) => {
         const lines = text.split('\n').filter(line => line.trim() !== '');
 
@@ -123,7 +123,7 @@ function PlaylistGenerator() {
         }
     };
 
-    const handleExport = async () => {
+  /*  const handleExport = async () => {
         if(!accessToken) {
             alert('To export this playlist, please log in first');
             window.location.href = `${backendUrl}/auth/spotify`;
@@ -176,7 +176,7 @@ function PlaylistGenerator() {
         } finally {
             setExportLoading(false);
         }
-    };
+    */   };
 
     const handleReset = () => {
         setPlaylist([]);
@@ -189,14 +189,6 @@ function PlaylistGenerator() {
     return (
         <div className="container fade-in">
             <h1 className="title"> Playlist Generator</h1>
-            {(!accessToken || isTokenExpired()) && (
-                <button
-                    onClick={() => window.location.href = `${backendUrl}/auth/spotify`}
-                    className="spotify-btn"
-                    >
-                        Login with Spotify
-                    </button>
-            )}
             <div className="input-group">
             {playlist.length === 0 ? (
                 <>
