@@ -49,13 +49,13 @@ function PlaylistGenerator() {
         }
     } 
 
-    if(!sessionStorage.getItem('redirectedOnce')){
-        console.log('No token found. Forcing fresh Spotify login...');
-        sessionStorage.setItem('redirectedOnce', 'true');
-        localStorage.removeItem('spotify_access_token');
-        localStorage.removeItem('spotify_token_expiration');
-        window.location.href = `${backendUrl}/auth/spotify`;
-    }
+  //  if(!sessionStorage.getItem('redirectedOnce')){
+    //    console.log('No token found. Forcing fresh Spotify login...');
+      //  sessionStorage.setItem('redirectedOnce', 'true');
+     //   localStorage.removeItem('spotify_access_token');
+     //   localStorage.removeItem('spotify_token_expiration');
+     //   window.location.href = `${backendUrl}/auth/spotify`;
+  //  }
       }, []);
 
       const isTokenExpired = () => {
@@ -125,7 +125,8 @@ function PlaylistGenerator() {
 
     const handleExport = async () => {
         if(!accessToken) {
-            alert('Please login with Spotify.');
+            alert('To export this playlist, please log in first');
+            window.location.href = `${backendUrl}/auth/spotify`;
             return;
         }
         if(isTokenExpired()) {
@@ -240,6 +241,13 @@ function PlaylistGenerator() {
                         ) : (
                             "Export to Spotify"
                         )}
+                    </button>
+                    <button onClick={() => {
+                        const plainText = playlist.map((t, i) => `{i+1}. ${t.name} -- ${t.artist}`).join('\n');
+                        navigator.clipboard.writeText(plainText);
+                        alert("Playlist copied to clipboard!");
+                    }} className="spotify-btn">
+                        Copy Playlist
                     </button>
                     {playlistUrl && (
                         <div className="link-section">
