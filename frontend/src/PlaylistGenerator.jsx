@@ -243,6 +243,5 @@ function PlaylistGenerator() {
             )}
         </div>
     );
-}
 
 export default PlaylistGenerator;
