@@ -129,39 +129,39 @@ app.post('/export-playlist', async (req, res) => {
 
         for (const track of tracks) {
             const query = `${track.name} ${track.artist}`;
+            console.log('Searching for track:', query)
             const searchResult = await spotifyApi.searchTracks(query, { limit: 1 });
             const found = searchResult?.body?.tracks?.items?.[0];
-            if(found?.uri) trackUris.push(found.uri);
+            if(found?.uri) {
+                console.log(`Found track: ${found.name} -> ${found.uri}`);
+                trackUris.push(found.uri);
+            } else {
+                console.warn(`No match found for ${query}`);
+            }
           }
           if (trackUris.length === 0) {
             return res.status(400).json({ error: 'No valid tracks found to create playlist.' });
           }
+          console.log('Adding tracks to playlist:', trackUris);
         await spotifyApi.addTracksToPlaylist(playlistId, trackUris);
         return res.json({playlistUrl: `https://open.spotify.com/playlist/${playlistId}`});
     } catch (err) {
-        console.error('Export error', err.message || err);
-        if (err.response) {
-            const data = err.response?.data || err.body;
-            console.error('Spotify error response:', JSON.stringify(data, null, 2));
+        console.error('Export error', err);
+
+        const errorMessage = 
+            err.message ||
+            (typeof err.body === 'object' ? JSON.stringify(err.body) : err.body) || 
+            'Unknown error';
+
+        if(err.body){
+            console.error('Spotify error body:', err.body);
         }
 
-        let message = 'Unknown error';
-        let raw = null;
-
-        if (err.body) {
-            message = typeof err.body === 'string' ? err.body : JSON.stringify(err.body);
-            raw = err.body;
-        } else if (err.response?.data) {
-            message = typeof err.response.data === 'string' ? err.response.date : JSON.stringify(err.response.data);
-            raw = err.response.data;
-        } else {
-            message = err.message || String(err);
-        }
-        res.status(500).send({
-            error: 'Error exporting playlist.',
-            message,
-            raw, 
-        })
+        return res.status(500).json({
+            error: 'Error exporting playlist',
+            message: errorMessage,
+            raw: err.body || null,
+        });
     }
 });
 
